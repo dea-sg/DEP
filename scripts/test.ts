@@ -1,6 +1,6 @@
  
  
-// import { ethers } from 'hardhat'
+// Import { ethers } from 'hardhat'
 
 // async function main() {
 //     let publicSale_startTime = (new Date('2019/08/27 00:00:00')).getTime();
