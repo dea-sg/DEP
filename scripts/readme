@@ -1,0 +1,107 @@
+//　本番環境のデプロイスクリプト
+
+var DEAPCoinCrowdsale = artifacts.require("./DEAPCoinCrowdsale.sol");
+var DEAPCoin = artifacts.require("./DEAPCoin.sol");
+var SaleInfo = artifacts.require("./SaleInfo.sol");
+var WhiteList = artifacts.require("./WhiteList.sol");
+var GroupLockup = artifacts.require("./GroupLockup.sol");
+
+module.exports = function(deployer, network, accounts){
+
+    //プライベートセール開始日
+    var preSale_startTime = (new Date('2019/08/27 00:00:00')).getTime();
+    preSale_startTime = parseInt(preSale_startTime/1000);
+    preSale_startTime = preSale_startTime + 18*60*60;//時
+
+    //プライベートセール終了日
+    var preSale_endTime = (new Date('2019/08/27 00:00:00')).getTime();
+    preSale_endTime = parseInt(preSale_endTime/1000);
+    preSale_endTime = preSale_endTime + 18*60*60;//時
+    preSale_endTime = preSale_endTime + 30*60;//分
+
+    //パブリックセール開始日
+    var publicSale_startTime = (new Date('2019/08/27 00:00:00')).getTime();
+    publicSale_startTime = parseInt(publicSale_startTime/1000);
+    publicSale_startTime = publicSale_startTime + 19*60*60;//時
+
+    //パブリックセール終了日
+    var publicSale_endTime = (new Date('2022/08/27 00:00:00')).getTime();
+    publicSale_endTime = parseInt(publicSale_endTime/1000);
+    publicSale_endTime = publicSale_endTime + 23*60*60;
+    publicSale_endTime = publicSale_endTime + 59*60;
+    publicSale_endTime = publicSale_endTime + 59;
+
+    //最低限送金ETH
+    const minimum_weiAmount = 0;//最低限ETH,Default: 0 eth
+
+    //取引レート
+    const rate = new web3.BigNumber(20000);//Default: 1 eth:20000 DEP
+
+    //正しいアドレスを入力してください
+    const admin_wallet = "0xD80CF023cADc99904825ffB181c798C4cE3Dc3a3"; //デプロイ用のアドレス(システム管理者)設定
+    const sale_owner_wallet = "0x219F650Fb33166573bc9B9628811b3c4C0c7D56b";　//セール用のトークンの管理者のアドレス設定
+    const unsale_owner_wallet = "0x0F4f0f112C1C2857fC11021eBEAA82AD6586BBCf"; //非セール用のトークンの管理者のアドレス設定
+    const eth_management_wallet = "0xb03d7960c340A4e1A07628cC76cfD2C632C21942"; //ETHERの管理者のアドレス設定
+
+    if(rate === ''){
+        console.log('rate does not set up yet. deploy stop.');
+        process.exit(0);
+    }
+
+    if(minimum_weiAmount === ''){
+        console.log('minimum amount does not set up yet. deploy stop.');
+        process.exit(0);
+    }
+
+    var SaleInfo_address;
+    var WhiteList_address;
+    var GroupLockup_address;
+
+    var deploy_deplay = 60000;
+
+    deployer.deploy(GroupLockup)
+    .then(() => GroupLockup.deployed())
+    .then(lockup => new Promise(resolve => setTimeout(() => resolve(lockup), deploy_deplay)))
+    .then(lockup => deployer.deploy(WhiteList))
+    .then(() => WhiteList.deployed())
+    .then(WhiteList => new Promise(resolve => setTimeout(() => resolve(WhiteList), deploy_deplay)))
+    .then(WhiteList => deployer.deploy(DEAPCoin,
+                                        sale_owner_wallet,
+                                        unsale_owner_wallet,
+                                        GroupLockup.address))
+    .then(() => DEAPCoin.deployed())
+    .then(DEAPCoin => new Promise(resolve => setTimeout(() => resolve(DEAPCoin), deploy_deplay)))
+    .then(DEAPCoin => deployer.deploy(SaleInfo,
+                                        preSale_startTime,
+                                        preSale_endTime,
+                                        publicSale_startTime,
+                                        publicSale_endTime,
+                                        admin_wallet,
+                                        sale_owner_wallet,
+                                        unsale_owner_wallet,
+                                        eth_management_wallet))
+    .then(() => SaleInfo.deployed())
+    .then(SaleInfo => new Promise(resolve => setTimeout(() => resolve(SaleInfo), deploy_deplay)))
+    .then(SaleInfo => deployer.deploy(DEAPCoinCrowdsale,
+                                        preSale_startTime,
+                                        publicSale_endTime,
+                                        rate,
+                                        minimum_weiAmount,
+                                        admin_wallet,
+                                        sale_owner_wallet,
+                                        unsale_owner_wallet,
+                                        eth_management_wallet,
+                                        DEAPCoin.address,
+                                        SaleInfo.address,
+                                        WhiteList.address,
+                                        GroupLockup.address))
+    .then(() => DEAPCoin.deployed())
+    .then(DEAPCoin => new Promise(resolve => setTimeout(() => resolve(DEAPCoin), deploy_deplay)))
+    .then(DEAPCoin => DEAPCoin.transferOwnership(DEAPCoinCrowdsale.address))
+    .then(() => GroupLockup.deployed())
+    .then(GroupLockup => new Promise(resolve => setTimeout(() => resolve(GroupLockup), deploy_deplay)))
+    .then(GroupLockup => GroupLockup.transferOwnership(DEAPCoinCrowdsale.address))
+    .catch(e => {
+        console.log(e);
+    });
+};

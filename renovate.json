@@ -1,4 +1,12 @@
 {
 	"extends": ["config:base"],
-	"automerge": true
+	"automerge": true,
+	"packageRules": [
+		{
+			"packageNames": [
+				"openzeppelin-solidity"
+			],
+			"allowedVersions": "1.9.0"
+		}
+	]
 }

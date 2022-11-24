@@ -14,29 +14,25 @@ const privateKey =
 
 const config = {
 	solidity: {
-		version: '0.8.16',
+		version: '0.4.25',
 		settings: {
 			optimizer: {
-				enabled: true,
+				enabled: false,
 				runs: 200,
 			},
 		},
 	},
 	networks: {
-		rinkeby: {
-			url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ARCHEMY_KEY!}`,
+		goerli: {
+			url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ARCHEMY_KEY!}`,
 			accounts: [privateKey],
-		},
-		polygonMumbai: {
-			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
-				.ARCHEMY_KEY!}`,
-			accounts: [privateKey],
+			gasPrice: 20000000000,
+			gas: 6000000,
 		},
 	},
 	etherscan: {
 		apiKey: {
-			rinkeby: process.env.ETHERSCAN_API_KEY!,
-			polygonMumbai: process.env.POLYGONSCAN_API_KEY!,
+			goerli: process.env.ETHERSCAN_API_KEY!,
 		},
 	},
 }
