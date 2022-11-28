@@ -25,9 +25,7 @@ const config = {
 	networks: {
 		goerli: {
 			url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ARCHEMY_KEY!}`,
-			accounts: [privateKey],
-			gasPrice: 20000000000,
-			gas: 6000000,
+			accounts: [privateKey]
 		},
 	},
 	etherscan: {
