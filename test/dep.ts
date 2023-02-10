@@ -1,10 +1,10 @@
 import { expect } from 'chai'
 import { Wallet, BigNumber } from 'ethers'
 import { ethers } from 'hardhat'
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
+import { type SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import type { SnapshotRestorer } from '@nomicfoundation/hardhat-network-helpers'
 import { takeSnapshot } from '@nomicfoundation/hardhat-network-helpers'
-import { GroupLockup, WhiteList, DEAPCoin, SaleInfo, DEAPCoinCrowdsale, GroupLockup__factory } from '../typechain-types'
+import { type GroupLockup, type WhiteList, type DEAPCoin, type SaleInfo, type DEAPCoinCrowdsale, GroupLockup__factory } from '../typechain-types'
 
 describe('DEP', () => {
 	let groupLockup: GroupLockup
@@ -18,6 +18,7 @@ describe('DEP', () => {
 		const nativeValue = BigNumber.from(_value).mul(BigNumber.from(10).pow(decimals));
 		return nativeValue
 	};
+
 	const getSigners = async (): Promise<[
 		SignerWithAddress, 
 		SignerWithAddress, 
@@ -33,6 +34,7 @@ describe('DEP', () => {
 		const user = signers[5]
 		return [saleOwnerWallet, unsaleOwnerWallet, adminWallet, managementWallet, user]
 	};
+
 	before(async () => {
 		const [saleOwnerWallet, unsaleOwnerWallet, adminWallet, managementWallet] = await getSigners()
 		
@@ -196,7 +198,7 @@ describe('DEP', () => {
 
 				const filter = deap.filters.Transfer()
 				const events = await deap.queryFilter(filter)
-				const args = events[events.length - 1].args
+				const {args} = events[events.length - 1]
 				expect(args.from).to.equal(saleOwnerWallet.address)
 				expect(args.to).to.equal(toUser.address)
 				expect(args.value).to.equal(await getNativeValue(100))
@@ -222,7 +224,7 @@ describe('DEP', () => {
 
 				const filter = deap.filters.Transfer()
 				const events = await deap.queryFilter(filter)
-				const args = events[events.length - 1].args
+				const {args} = events[events.length - 1]
 				expect(args.from).to.equal(saleOwnerWallet.address)
 				expect(args.to).to.equal(toUser.address)
 				expect(args.value).to.equal(await getNativeValue(100))
@@ -238,7 +240,7 @@ describe('DEP', () => {
 				await deap.approve(toUser.address, await getNativeValue(100))
 				const filter = deap.filters.Approval()
 				const events = await deap.queryFilter(filter)
-				const args = events[events.length - 1].args
+				const {args} = events[events.length - 1]
 				expect(args.owner).to.equal(saleOwnerWallet.address)
 				expect(args.spender).to.equal(toUser.address)
 				expect(args.value).to.equal(await getNativeValue(100))
