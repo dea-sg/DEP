@@ -20,3 +20,7 @@ main()
 // Npx hardhat run dist/scripts/4-deploy-sale-info.js --network goerli
 // contract address: 0x673f96F43c0555E21bD3Ac28566298F66264210a
 // npx hardhat verify --contract contracts/SaleInfo.sol:SaleInfo --network goerli 0x673f96F43c0555E21bD3Ac28566298F66264210a --constructor-args scripts/4-deploy-sale-info-argument.js
+
+// Npx hardhat run dist/scripts/4-deploy-sale-info.js --network sepolia
+// contract address: 0x673f96F43c0555E21bD3Ac28566298F66264210a
+// npx hardhat verify --contract contracts/SaleInfo.sol:SaleInfo --network sepolia 0x673f96F43c0555E21bD3Ac28566298F66264210a --constructor-args scripts/4-deploy-sale-info-argument.js

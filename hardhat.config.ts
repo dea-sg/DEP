@@ -7,15 +7,15 @@ import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-// Const privateKey =
-// 	typeof process.env.PRIVATE_KEY === 'undefined'
-// 		? '0000000000000000000000000000000000000000000000000000000000000000'
-// 		: process.env.PRIVATE_KEY
+const privateKey =
+	typeof process.env.PRIVATE_KEY === 'undefined'
+		? '0000000000000000000000000000000000000000000000000000000000000000'
+		: process.env.PRIVATE_KEY
 
-const mnemonic =
-		typeof process.env.MNEMONIC === 'undefined'
-			? 'test test test test test test test test test test test junk'
-			: process.env.MNEMONIC
+// const mnemonic =
+// 		typeof process.env.MNEMONIC === 'undefined'
+// 			? 'test test test test test test test test test test test junk'
+// 			: process.env.MNEMONIC
 const config = {
 	solidity: {
 		version: '0.4.25',
@@ -27,20 +27,19 @@ const config = {
 		},
 	},
 	networks: {
-		// Goerli: {
-		// 	url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ARCHEMY_KEY!}`,
-		// 	accounts: [privateKey]
-		// },
+		sepolia: {
+			url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ARCHEMY_KEY!}`,
+			accounts: [privateKey],
+		},
 		mainnet: {
 			url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ARCHEMY_KEY!}`,
-			accounts: {
-				mnemonic
-			}
+			accounts: [privateKey],
 		},
 	},
 	etherscan: {
 		apiKey: {
 			goerli: process.env.ETHERSCAN_API_KEY!,
+			sepolia: process.env.ETHERSCAN_API_KEY!,
 		},
 	},
 }
